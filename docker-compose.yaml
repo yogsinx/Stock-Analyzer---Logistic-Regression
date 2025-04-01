@@ -1,0 +1,23 @@
+version: "3.8" # Specify the version for better compatibility
+
+services:
+  db:
+    image: postgres:15 # Use a specific version instead of "latest" for stability
+    container_name: postgres_db # Assign a container name for easier management
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: stock_data
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persist database data
+    restart: unless-stopped # Automatically restart the container if it stops unexpectedly
+    healthcheck: # Add a health check to ensure the database is ready
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data: # Define a named volume for database persistence
